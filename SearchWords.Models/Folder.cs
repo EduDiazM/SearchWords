@@ -5,8 +5,8 @@ namespace SearchWords.Models
 {
     public class Folder : IFileSystemItem
     {
-        public string Name { get; set; }
+        //public string Name { get; set; }
         public List<File> Files { get; set; }
-        public string Message { get; set; }
+        //public string Message { get; set; }
     }
 }

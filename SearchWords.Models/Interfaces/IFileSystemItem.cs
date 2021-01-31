@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SearchWords.Models.Interfaces
 {
-    public interface IFileSystemItem
+    public class IFileSystemItem
     {
-        string Name { get; set; }
+        public string Name { get; set; }
     }
 }

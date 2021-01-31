@@ -10,15 +10,15 @@ namespace SearchWords.BR.Services
         {
             using IServiceScope serviceScope = services.CreateScope();
             IServiceProvider provider = serviceScope.ServiceProvider;
-            var folder = provider.GetRequiredService<FolderService>();
+            var folderService = provider.GetRequiredService<FolderService>();
 
-            if (!folder.Exists(folderPath))
+            if (!folderService.Exists(folderPath))
             {
                 Console.WriteLine($"Please write an existing path. Error: '{folderPath}' doesn't exist.");
                 return;
             }
 
-            folder.Load(folderPath);
+            folderService.Load(folderPath);
 
             bool exit = false;
             while (!exit)
@@ -33,13 +33,16 @@ namespace SearchWords.BR.Services
                     break;
                 }
 
-                folder.Search(criteria);
-
-                ShowResult(folder.GetFolder());
+                //var result = folderService.Search(criteria);
+                ShowResult(folderService);
             }
         }
-
+        /// <summary>
+        /// Show latest generated message within FolderService.
+        /// </summary>
+        /// <typeparam name="T">FolderService type</typeparam>
+        /// <param name="item">FolderService object</param>
         private static void ShowResult<T>(T item)
-            where T : Folder => Console.WriteLine($"{item.Message}");
+            where T : FolderService => Console.WriteLine($"{item.Message}");
     }
 }

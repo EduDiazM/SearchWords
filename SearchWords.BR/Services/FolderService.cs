@@ -10,14 +10,8 @@ namespace SearchWords.BR.Services
 {
     public class FolderService : IFolderService, IDisposable
     {
-        private Folder folder;
-
-        //private readonly IFileService fileService;
-        //public FolderService(IFileService fileService)
-        //{
-        //    this.fileService = fileService;
-        //}
-
+        public Folder Folder { get; set; }
+        public string Message { get; set; }
 
 
         /// <summary>
@@ -34,7 +28,7 @@ namespace SearchWords.BR.Services
         /// </summary>
         public void Load(string name)
         {
-            folder = new Folder()
+            Folder = new Folder()
             {
                 Name = name,
                 Files = new List<Models.File>()
@@ -44,7 +38,7 @@ namespace SearchWords.BR.Services
             string[] fileEntries = Directory.GetFiles(name,"*.txt");
             foreach (string fileName in fileEntries)
             {
-                folder.Files.Add(new SearchWords.Models.File()
+                Folder.Files.Add(new SearchWords.Models.File()
                 {
                     Name = fileName,
                     Content = System.IO.File.ReadAllText(fileName)
@@ -59,39 +53,35 @@ namespace SearchWords.BR.Services
         {
             string result = String.Empty;
 
-            var coincidenceFiles = folder.Files.Where(e => e.Content.Contains(criteria.Trim(), StringComparison.InvariantCultureIgnoreCase)).ToArray();
+            var coincidenceFiles = Folder.Files.Where(e => e.Content.Contains(criteria.Trim(), StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
             if(coincidenceFiles == null || coincidenceFiles.Length == 0)
             {
-                result = $"No coincidences.{System.Environment.NewLine}";
+                Message = $"No coincidences.{System.Environment.NewLine}";
             }
             else
             {                
                 foreach(var c in coincidenceFiles)
                 {
-                    result += $"{c.Name.Substring(c.Name.LastIndexOf('\\'))} : {Regex.Matches(c.Content, criteria).Count} occurrences {System.Environment.NewLine}";
+                    Message += $"{c.Name.Substring(c.Name.LastIndexOf('\\') + 1)} : {Regex.Matches(c.Content, criteria).Count} occurrences {System.Environment.NewLine}";
                 }
             }
 
-            folder.Message = result;
             //Console.Write(result);
+            //return result;
         }
         /// <summary>
-        /// Return Folder object.
+        /// Dispose method, from interface IDisposible.
         /// </summary>
-        /// <returns>Folder object</returns>
-        public Folder GetFolder()
-        {
-            return folder;
-        }
-
         public void Dispose()
         {
-            if (folder.Files != null)
-                folder.Files.Clear();
+            if (Folder != null)
+            {
+                if (Folder.Files != null)
+                    Folder.Files.Clear();
 
-            folder.Message = null;
-            folder = null;
+                Folder = null;
+            }
         }
     }
 }
