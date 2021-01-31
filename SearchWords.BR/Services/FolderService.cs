@@ -55,20 +55,19 @@ namespace SearchWords.BR.Services
 
             var coincidenceFiles = Folder.Files.Where(e => e.Content.Contains(criteria.Trim(), StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
-            if(coincidenceFiles == null || coincidenceFiles.Length == 0)
+            if (coincidenceFiles == null || coincidenceFiles.Length == 0)
             {
-                Message = $"No coincidences.{System.Environment.NewLine}";
+                result = $"No coincidences.{System.Environment.NewLine}";
             }
             else
             {                
                 foreach(var c in coincidenceFiles)
                 {
-                    Message += $"{c.Name.Substring(c.Name.LastIndexOf('\\') + 1)} : {Regex.Matches(c.Content, criteria).Count} occurrences {System.Environment.NewLine}";
+                    result += $"{c.Name.Substring(c.Name.LastIndexOf('\\') + 1)} : {Regex.Matches(c.Content, criteria).Count} occurrences {System.Environment.NewLine}";
                 }
             }
 
-            //Console.Write(result);
-            //return result;
+            Message = result;
         }
         /// <summary>
         /// Dispose method, from interface IDisposible.

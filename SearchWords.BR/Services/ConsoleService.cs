@@ -33,7 +33,7 @@ namespace SearchWords.BR.Services
                     break;
                 }
 
-                //var result = folderService.Search(criteria);
+                folderService.Search(criteria);
                 ShowResult(folderService);
             }
         }
