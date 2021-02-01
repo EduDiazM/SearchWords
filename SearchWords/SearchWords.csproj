@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SearchWords.BR\SearchWords.BR.csproj" />
-    <ProjectReference Include="..\SearchWords.IoC\SearchWords.IoC.csproj" />
   </ItemGroup>
 
 </Project>

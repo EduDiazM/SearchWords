@@ -9,27 +9,55 @@ namespace SearchWords
 {
     class Program
     {
-        static void Main(string[] args)
+        #region Private Interface
+        private readonly ILogger<Program> logger;
+        private readonly IFolderService folderService;
+        #endregion
+
+        /// <summary>
+        /// Entry point, setup the application.
+        /// </summary>
+        /// <param name="args">Existing path folder.</param>
+        static void Main(string[] args) 
         {
-            if (args == null)
-            {
-                Console.WriteLine("Please write an existing path.");
-                throw new ArgumentException("Please write an existing path.");
-            }
+            var host = CreateHostBuilder(args).Build();
+            host.Services.GetRequiredService<Program>().RunApp(args);
+        }
 
-            //Define Dependency Injection
-            var serviceProvider = new ServiceCollection()
-                .AddLogging()
-                .AddSingleton<IFolderService, FolderService>()
-                .BuildServiceProvider();
+        /// <summary>
+        /// Create the host to register the services for the dependency injection.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns>Newly created host</returns>
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args).ConfigureServices(
+                services =>
+                {
+                    services.AddSingleton<Program>();
+                    services.AddSingleton<IFolderService, FolderService>();
+                    //services.AddSingleton<IFileService, FileService>(); ==> this service is not used here.
+                });
+        }
 
-            //configure console logging
-            //serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
+        /// <summary>
+        /// Setup interfaces to use during the execution.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="folderService"></param>
+        public Program(ILogger<Program> logger, IFolderService folderService)
+        {
+            this.logger = logger;
+            this.folderService = folderService;
+        }
 
-            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
-            logger.LogDebug("Starting application");
-
-            var folderService = serviceProvider.GetService<IFolderService>();
+        /// <summary>
+        /// Execute the core of the app.
+        /// </summary>
+        /// <param name="args"></param>
+        public void RunApp(string[] args)
+        {
+            logger.LogInformation($"The execution has started.");
             var folderPath = string.Join(" ", args);
 
             if (!folderService.Exists(folderPath))
@@ -56,6 +84,8 @@ namespace SearchWords
                 folderService.Search(criteria);
                 Console.WriteLine($"{folderService.Message}");
             }
+
+            logger.LogInformation($"The execution has finished.");
         }
     }
 }
