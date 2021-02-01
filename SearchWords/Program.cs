@@ -17,7 +17,7 @@ namespace SearchWords
                 throw new ArgumentException("Please write an existing path.");
             }
 
-            //setup our DI
+            //Define Dependency Injection
             var serviceProvider = new ServiceCollection()
                 .AddLogging()
                 .AddSingleton<IFolderService, FolderService>()
@@ -38,6 +38,7 @@ namespace SearchWords
                 return;
             }
 
+            //Map into memory the specified path
             folderService.Load(folderPath);
 
             while (true)
@@ -48,6 +49,7 @@ namespace SearchWords
 
                 if (criteria.Trim().ToLower() == "quit" || criteria.Trim().ToLower() == "exit")
                 {
+                    //Break the loop and close the app.
                     break;
                 }
 
