@@ -42,11 +42,6 @@ namespace SearchWords.BR.Services
                 foreach (string fileName in fileEntries)
                 {
                     Folder.Files.Add(fileService.Load(fileName));
-                    //Folder.Files.Add(new SearchWords.Models.File()
-                    //{
-                    //    Name = fileName,
-                    //    Content = System.IO.File.ReadAllText(fileName)
-                    //});
                 }
             }
         }
@@ -58,7 +53,10 @@ namespace SearchWords.BR.Services
         {
             string result = String.Empty;
 
-            var coincidenceFiles = Folder.Files.Where(e => e.Content.Contains(criteria.Trim(), StringComparison.InvariantCultureIgnoreCase)).ToArray();
+            var coincidenceFiles = Folder.Files.Where(
+                e => !string.IsNullOrWhiteSpace(e.Content)
+                && !string.IsNullOrWhiteSpace(e.Name)
+                && e.Content.Contains(criteria.Trim(), StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
             if (coincidenceFiles == null || coincidenceFiles.Length == 0)
             {

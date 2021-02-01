@@ -14,7 +14,13 @@ namespace SearchWords.BR.Services
         /// <returns>File object</returns>
         public File Load(string fileName)
         {
-            return null;
+            File file = new File()
+            {
+                Name = fileName,
+                Content = System.IO.File.ReadAllText(fileName)
+            };
+
+            return file;
         }
 
         public void Dispose()
