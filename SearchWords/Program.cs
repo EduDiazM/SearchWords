@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SearchWords.BR.Services;
+using SearchWords.BR.Services.Interfaces;
 using System;
 
 namespace SearchWords
@@ -15,6 +16,7 @@ namespace SearchWords
                 throw new ArgumentException("Please write an existing path.");
             }
 
+
             using IHost host = CreateHostBuilder(args).Build();
 
             ConsoleService.LaunchPrompt(host.Services, string.Join(" ", args));
@@ -27,10 +29,10 @@ namespace SearchWords
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((_, services) =>
                     services
-                        //.AddSingleton<IFolderService, FolderService>()
+                        .AddSingleton<IFolderService, FolderService>());
                         //.AddSingleton<IFileService, FileService>());
-                        .AddSingleton<FolderService>()
-                        .AddSingleton<FileService>());
+                        //.AddSingleton<FolderService>()
+                        //.AddSingleton<FileService>());
 
             return host;
         }

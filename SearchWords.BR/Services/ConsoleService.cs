@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using SearchWords.Models;
+using SearchWords.BR.Services.Interfaces;
 
 namespace SearchWords.BR.Services
 {
@@ -10,7 +11,7 @@ namespace SearchWords.BR.Services
         {
             using IServiceScope serviceScope = services.CreateScope();
             IServiceProvider provider = serviceScope.ServiceProvider;
-            var folderService = provider.GetRequiredService<FolderService>();
+            var folderService = provider.GetRequiredService<IFolderService>();
 
             if (!folderService.Exists(folderPath))
             {
@@ -34,7 +35,10 @@ namespace SearchWords.BR.Services
                 }
 
                 folderService.Search(criteria);
-                ShowResult(folderService);
+                //ShowResult(folderService);
+                Console.WriteLine($"{folderService.Message}");
+
+
             }
         }
         /// <summary>
