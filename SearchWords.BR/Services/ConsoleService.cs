@@ -20,8 +20,8 @@ namespace SearchWords.BR.Services
 
             folderService.Load(folderPath);
 
-            bool exit = false;
-            while (!exit)
+            //bool exit = false;
+            while (true)
             {
                 Console.Write("search> ");
 
@@ -29,7 +29,7 @@ namespace SearchWords.BR.Services
 
                 if (criteria.Trim().ToLower() == "quit" || criteria.Trim().ToLower() == "exit")
                 {
-                    exit = true;
+                    //exit = true;
                     break;
                 }
 

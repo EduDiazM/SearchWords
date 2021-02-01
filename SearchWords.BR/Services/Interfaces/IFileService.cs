@@ -7,6 +7,6 @@ namespace SearchWords.BR.Services.Interfaces
 {
     public interface IFileService
     {
-        List<File> Load(string folderName);
+        File Load(string fileName);
     }
 }

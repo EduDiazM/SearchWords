@@ -1,19 +1,23 @@
 ﻿using SearchWords.BR.Services.Interfaces;
 using SearchWords.Models;
+using System;
 using System.Collections.Generic;
 
 namespace SearchWords.BR.Services
 {
-    public class FileService : IFileService
+    public class FileService : IFileService, IDisposable
     {
         /// <summary>
         /// Load files (file name and content) from folder.
         /// </summary>
-        /// <param name="folderName">Folder name where execute this load method</param>
-        /// <returns>List of File objects</returns>
-        public List<File> Load(string folderName)
+        /// <param name="fileName">File name to load.</param>
+        /// <returns>File object</returns>
+        public File Load(string fileName)
         {
             return null;
         }
+
+        public void Dispose()
+        { }
     }
 }

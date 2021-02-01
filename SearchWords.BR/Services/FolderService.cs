@@ -36,13 +36,18 @@ namespace SearchWords.BR.Services
 
             //Load text files, names and content.
             string[] fileEntries = Directory.GetFiles(name,"*.txt");
-            foreach (string fileName in fileEntries)
+
+            using(var fileService = new FileService())
             {
-                Folder.Files.Add(new SearchWords.Models.File()
+                foreach (string fileName in fileEntries)
                 {
-                    Name = fileName,
-                    Content = System.IO.File.ReadAllText(fileName)
-                });
+                    Folder.Files.Add(fileService.Load(fileName));
+                    //Folder.Files.Add(new SearchWords.Models.File()
+                    //{
+                    //    Name = fileName,
+                    //    Content = System.IO.File.ReadAllText(fileName)
+                    //});
+                }
             }
         }
         /// <summary>
