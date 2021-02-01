@@ -2,8 +2,7 @@
   "profiles": {
     "SearchWords": {
       "commandName": "Project",
-      "commandLineArgs": "D:\\_TRASH\\SearchWords test",
-      "defaultPrompt": "search>"
+      "commandLineArgs": "D:\\_TRASH\\SearchWords test"
     }
   }
 }

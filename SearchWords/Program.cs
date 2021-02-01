@@ -1,17 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SearchWords.BR.Services;
 using SearchWords.BR.Services.Interfaces;
 using System;
+using System.Linq;
 
 namespace SearchWords
 {
     class Program
     {
-        #region Private Interface
+        #region Private
         private readonly ILogger<Program> logger;
         private readonly IFolderService folderService;
+        private readonly IConfiguration configuration;
+        private string defaultPrompt;
+        private string[] exitCommands;
         #endregion
 
         /// <summary>
@@ -26,12 +31,19 @@ namespace SearchWords
 
         /// <summary>
         /// Create the host to register the services for the dependency injection.
+        /// Setup configuration for reading from appsettings.json
         /// </summary>
         /// <param name="args"></param>
         /// <returns>Newly created host</returns>
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Host.CreateDefaultBuilder(args).ConfigureServices(
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostContext, config) =>
+                {
+                    config.SetBasePath(Environment.CurrentDirectory);
+                    config.AddJsonFile("appsettings.json", optional: false);
+                })
+                .ConfigureServices(
                 services =>
                 {
                     services.AddSingleton<Program>();
@@ -45,9 +57,10 @@ namespace SearchWords
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="folderService"></param>
-        public Program(ILogger<Program> logger, IFolderService folderService)
+        public Program(ILogger<Program> logger, IConfiguration configuration, IFolderService folderService)
         {
             this.logger = logger;
+            this.configuration = configuration;
             this.folderService = folderService;
         }
 
@@ -59,6 +72,8 @@ namespace SearchWords
         {
             logger.LogInformation($"The execution has started.");
             var folderPath = string.Join(" ", args);
+            defaultPrompt = configuration["defaultPrompt"];
+            exitCommands = configuration["exitCommands"].Split(';');
 
             if (!folderService.Exists(folderPath))
             {
@@ -71,11 +86,11 @@ namespace SearchWords
 
             while (true)
             {
-                Console.Write("search> ");
+                Console.Write(defaultPrompt);
 
                 var criteria = Console.ReadLine();
 
-                if (criteria.Trim().ToLower() == "quit" || criteria.Trim().ToLower() == "exit")
+                if (exitCommands.Any(e => e == criteria.Trim().ToLower()))
                 {
                     //Break the loop and close the app.
                     break;
