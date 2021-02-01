@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SearchWords.BR.Services;
 using SearchWords.BR.Services.Interfaces;
 using System;
@@ -16,25 +17,43 @@ namespace SearchWords
                 throw new ArgumentException("Please write an existing path.");
             }
 
+            //setup our DI
+            var serviceProvider = new ServiceCollection()
+                .AddLogging()
+                .AddSingleton<IFolderService, FolderService>()
+                .BuildServiceProvider();
 
-            using IHost host = CreateHostBuilder(args).Build();
+            //configure console logging
+            //serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug);
 
-            ConsoleService.LaunchPrompt(host.Services, string.Join(" ", args));
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
+            logger.LogDebug("Starting application");
 
-            host.Run();
-        }
+            var folderService = serviceProvider.GetService<IFolderService>();
+            var folderPath = string.Join(" ", args);
 
-        static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            var host = Host.CreateDefaultBuilder(args)
-                .ConfigureServices((_, services) =>
-                    services
-                        .AddSingleton<IFolderService, FolderService>());
-                        //.AddSingleton<IFileService, FileService>());
-                        //.AddSingleton<FolderService>()
-                        //.AddSingleton<FileService>());
+            if (!folderService.Exists(folderPath))
+            {
+                Console.WriteLine($"Please write an existing path. Error: '{folderPath}' doesn't exist.");
+                return;
+            }
 
-            return host;
+            folderService.Load(folderPath);
+
+            while (true)
+            {
+                Console.Write("search> ");
+
+                var criteria = Console.ReadLine();
+
+                if (criteria.Trim().ToLower() == "quit" || criteria.Trim().ToLower() == "exit")
+                {
+                    break;
+                }
+
+                folderService.Search(criteria);
+                Console.WriteLine($"{folderService.Message}");
+            }
         }
     }
 }
