@@ -1,6 +1,4 @@
-﻿using SearchWords.Models;
-
-namespace SearchWords.Models
+﻿namespace SearchWords.Models
 {
     public class File : FileSystemItem
     {

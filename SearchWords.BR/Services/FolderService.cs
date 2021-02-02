@@ -63,8 +63,7 @@ namespace SearchWords.BR.Services
         /// </summary>
         /// <param name="criteria">Text for matchings</param>
         public void Search(string criteria)
-        {
-            logger.LogInformation($"FolderService -> Search.");
+        {   
             string result = String.Empty;
 
             var coincidenceFiles = Folder.Files.Where(
@@ -85,6 +84,8 @@ namespace SearchWords.BR.Services
             }
 
             Message = result;
+
+            //logger.LogInformation($"FolderService -> Exit from 'Search' method.");
         }
         /// <summary>
         /// Dispose method, from interface IDisposible.
