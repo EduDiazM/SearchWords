@@ -1,4 +1,5 @@
-﻿using SearchWords.BR.Services.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using SearchWords.BR.Services.Interfaces;
 using SearchWords.Models;
 using System;
 using System.Collections.Generic;

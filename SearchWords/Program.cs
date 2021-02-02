@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace SearchWords
 {
-    class Program
+    public class Program
     {
         #region Private
         private readonly ILogger<Program> logger;
@@ -71,6 +71,7 @@ namespace SearchWords
         public void RunApp(string[] args)
         {
             logger.LogInformation($"The execution has started.");
+
             var folderPath = string.Join(" ", args);
             defaultPrompt = configuration["defaultPrompt"];
             exitCommands = configuration["exitCommands"].Split(';');

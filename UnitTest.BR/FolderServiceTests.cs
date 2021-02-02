@@ -1,5 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SearchWords.BR.Services;
+using SearchWords.BR.Services.Interfaces;
 using SearchWords.Models;
 
 namespace UnitTest.BR
@@ -7,6 +11,17 @@ namespace UnitTest.BR
     [TestClass]
     public class FolderServiceTests
     {
+        private readonly IHost host;
+        private readonly IFolderService folderService;
+
+        public FolderServiceTests()
+        {
+            host = Host.CreateDefaultBuilder().ConfigureServices(
+                services => services.AddSingleton<IFolderService, FolderService>()
+                ).Build();
+
+            folderService = host.Services.GetRequiredService<IFolderService>();
+        }
         /// <summary>
         /// Test Search method. No results expected.
         /// </summary>
@@ -15,7 +30,7 @@ namespace UnitTest.BR
         {
             string criteria = "unit_test";
             string expected = $"No coincidences.{System.Environment.NewLine}";
-            FolderService folderService = new FolderService();
+
             folderService.Folder = new Folder()
             {
                 Name = "folder_test",
@@ -40,7 +55,9 @@ namespace UnitTest.BR
             string criteria = "unit_test";
             string expected = $"file_test1 : 1 occurrences {System.Environment.NewLine}";
             expected += $"file_test3 : 1 occurrences {System.Environment.NewLine}";
-            FolderService folderService = new FolderService();
+            FolderService folderService = new FolderService(
+                host.Services.GetRequiredService<ILogger<FolderService>>());
+
             folderService.Folder = new Folder()
             {
                 Name = "folder_test",

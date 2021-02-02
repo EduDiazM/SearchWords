@@ -1,4 +1,5 @@
-﻿using SearchWords.BR.Services.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using SearchWords.BR.Services.Interfaces;
 using SearchWords.Models;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,19 @@ namespace SearchWords.BR.Services
 {
     public class FolderService : IFolderService, IDisposable
     {
+        private readonly ILogger<FolderService> logger;
+
         public Folder Folder { get; set; }
         public string Message { get; set; }
 
+        /// <summary>
+        /// Add new default constructor to use ILogger.
+        /// </summary>
+        /// <param name="logger"></param>
+        public FolderService(ILogger<FolderService> logger)
+        {
+            this.logger = logger;
+        }
 
         /// <summary>
         /// Check if the folder exists in the file system.
@@ -21,6 +32,7 @@ namespace SearchWords.BR.Services
         /// <returns>True or False</returns>
         public bool Exists(string name)
         {
+            logger.LogInformation($"FolderService -> Exists.");
             return Directory.Exists(name);
         }
         /// <summary>
@@ -28,6 +40,7 @@ namespace SearchWords.BR.Services
         /// </summary>
         public void Load(string name)
         {
+            logger.LogInformation($"FolderService -> Load.");
             Folder = new Folder()
             {
                 Name = name,
@@ -51,6 +64,7 @@ namespace SearchWords.BR.Services
         /// <param name="criteria">Text for matchings</param>
         public void Search(string criteria)
         {
+            logger.LogInformation($"FolderService -> Search.");
             string result = String.Empty;
 
             var coincidenceFiles = Folder.Files.Where(
@@ -77,6 +91,7 @@ namespace SearchWords.BR.Services
         /// </summary>
         public void Dispose()
         {
+            logger.LogInformation($"FolderService -> Dispose.");
             if (Folder != null)
             {
                 if (Folder.Files != null)
